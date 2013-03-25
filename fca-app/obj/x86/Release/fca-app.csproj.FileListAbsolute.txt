@@ -1,0 +1,9 @@
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Release\fca_app.Form1.resources
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Release\fca_app.Properties.Resources.resources
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Release\GenerateResource.read.1.tlog
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Release\GenerateResource.write.1.tlog
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\bin\Release\fca-app.exe
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\bin\Release\fca-app.pdb
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Release\fca-app.exe
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Release\fca-app.pdb

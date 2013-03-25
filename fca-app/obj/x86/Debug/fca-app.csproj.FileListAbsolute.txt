@@ -1,0 +1,18 @@
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\bin\Debug\fca-app.exe
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\bin\Debug\fca-app.pdb
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Debug\fca_app.Form1.resources
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Debug\fca_app.Properties.Resources.resources
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Debug\fca-app.exe
+C:\Users\qqmber\AppData\Local\Temporary Projects\fca-app\obj\x86\Debug\fca-app.pdb
+D:\fca-app\fca-app\obj\x86\Debug\fca-app.exe
+D:\fca-app\fca-app\obj\x86\Debug\fca-app.pdb
+D:\fca-app\fca-app\bin\Debug\fca-app.exe
+D:\fca-app\fca-app\bin\Debug\fca-app.pdb
+D:\fca-app\fca-app\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\fca-app\fca-app\obj\x86\Debug\fca_app.Form1.resources
+D:\fca-app\fca-app\obj\x86\Debug\fca_app.Properties.Resources.resources
+D:\fca-app\fca-app\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\fca-app\fca-app\obj\x86\Debug\GenerateResource.write.1.tlog
