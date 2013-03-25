@@ -41,10 +41,27 @@ namespace fca_app.src
 
         public void closure(FcaObject elem, FcaMatrix matrix){
             addObject(elem);
-            int i = elem.getId();
+            int i = elem.getId()+1;
             int len = matrix.count();
+            int[] vect = new int[this.attributes.Length];
             while (i < len){
+                vect = intersect(matrix.getElemById(i).getAttributes());
+                if (attrEquals(vect)) {
+                    addObject(matrix.getElemById(i));
+                }
+                i++;
             }
+        }
+
+        private bool attrEquals(int[] vect)
+        {
+            int i = 0;
+            int len = this.attributes.Length;
+            while ((i < len) && (vect[i] == this.attributes[i])) i++;
+            if (i >= len)
+                return true;
+            else
+                return false;
         }
 
         public int findElem(FcaObject elem)

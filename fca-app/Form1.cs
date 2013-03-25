@@ -51,9 +51,7 @@ namespace fca_app
             }
             obj.setMatrix(matrix);
             obj.sortMatrix();
-            for (int k = 2; k < matrix.Length; k++) {
-                set.addObject(obj.getElemById(k));
-            }
+            set.closure(obj.getElemById(2), obj);
             
         }
     }
