@@ -52,7 +52,8 @@ namespace fca_app
             obj.setMatrix(matrix);
             obj.sortMatrix();
             set.closure(obj.getElemById(2), obj);
-            
+            FcaTree tree = new FcaTree();
+            tree.closureOneByOne(obj,tree);
         }
     }
 }

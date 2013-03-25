@@ -98,6 +98,10 @@ namespace fca_app.src
             return this.objects.Count;
         }
 
+        public List<FcaObject> getObjects() {
+            return this.objects;
+        }
+
         public void setAttributes(List<FcaAttribute> attr)
         {
             this.attributes = attr;

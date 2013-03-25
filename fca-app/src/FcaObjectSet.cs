@@ -39,6 +39,11 @@ namespace fca_app.src
 
         }
 
+        /// <summary>
+        ///  Замыкание множества
+        /// </summary>
+        /// <param name="elem">добавляемый элемент</param>
+        /// <param name="matrix">универсальное множество</param>
         public void closure(FcaObject elem, FcaMatrix matrix){
             addObject(elem);
             int i = elem.getId()+1;
@@ -53,6 +58,41 @@ namespace fca_app.src
             }
         }
 
+        /// <summary>
+        ///  Разность множеств.
+        /// </summary>
+        /// <param name="set">вычитаемое множество</param>
+        /// <returns>результат вычитания</returns>
+        public FcaObjectSet difference(FcaObjectSet set) {
+            FcaObjectSet difSet = new FcaObjectSet();
+            List<FcaObject> objs = set.getObjects();
+            foreach (FcaObject elem in this.objects) {
+                if (set.findElemById(elem.getId()) == -1)
+                    difSet.addObject(elem);
+            }
+            return difSet;
+        }
+
+        /// <summary>
+        ///  Клонирует множество.
+        /// </summary>
+        /// <returns>Клон исходного множества.</returns>
+        public FcaObjectSet clone() {
+            FcaObjectSet newSet = new FcaObjectSet();
+            foreach(FcaObject elem in this.objects)
+                    newSet.addObject(elem);
+            return newSet;
+        }
+
+        public FcaObject minObject() {
+            return this.objects[0];
+        }
+
+        public FcaObject maxObject() {
+            int len = this.objects.Count;
+            return this.objects[len - 1] ;
+        }
+
         private bool attrEquals(int[] vect)
         {
             int i = 0;
@@ -62,6 +102,11 @@ namespace fca_app.src
                 return true;
             else
                 return false;
+        }
+
+        public List<FcaObject> getObjects()
+        {
+            return this.objects;
         }
 
         public int findElem(FcaObject elem)
