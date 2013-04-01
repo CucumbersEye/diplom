@@ -50,7 +50,6 @@ namespace fca_app
                 t = true;
             }
             obj.setMatrix(matrix);
-            obj.sortMatrix();
             set.closure(obj.getElemById(2), obj);
             FcaTree tree = new FcaTree();
             tree.closureOneByOne(obj,tree);

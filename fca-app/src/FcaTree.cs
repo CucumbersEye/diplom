@@ -33,7 +33,8 @@ namespace fca_app.src
                         FcaObjectSet q = new FcaObjectSet();
                         q = tree.getMainSet().clone();
                         q.closure(nextObject, matrix);
-                        if (q.difference(tree.getMainSet()).minObject() == nextObject)
+                        FcaObjectSet dif =q.difference(tree.getMainSet()); 
+                        if (dif.minObject() == nextObject)
                         {
                             node = new FcaTree();
                             node.setMainSet(q);
@@ -41,7 +42,7 @@ namespace fca_app.src
                             node.setParent(tree);
                             tree.addDescendant(node);
                             closureOneByOne(matrix, node);
-                            tree.setNextId(q.maxObject().getId());
+                            tree.setNextId(nextObject.getId());
                         }
                         else
                         {

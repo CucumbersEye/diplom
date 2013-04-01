@@ -35,8 +35,9 @@ namespace fca_app.src
             else {
                 this.attributes = obj.getAttributes();
             }
-            this.objects.Add(obj);
-
+            if (!this.objects.Contains(obj))
+                        this.objects.Add(obj);
+            this.objects.Sort(compareObjects);
         }
 
         /// <summary>
@@ -46,12 +47,12 @@ namespace fca_app.src
         /// <param name="matrix">универсальное множество</param>
         public void closure(FcaObject elem, FcaMatrix matrix){
             addObject(elem);
-            int i = elem.getId()+1;
+            int i = 0;
             int len = matrix.count();
             int[] vect = new int[this.attributes.Length];
             while (i < len){
                 vect = intersect(matrix.getElemById(i).getAttributes());
-                if (attrEquals(vect)) {
+                if (attrEquals(vect)&&(i!=elem.getId())) {
                     addObject(matrix.getElemById(i));
                 }
                 i++;
@@ -150,5 +151,29 @@ namespace fca_app.src
         {
             this.attributes[attrId] = 0;
         }
+
+        public string toString()
+        {
+            string s = "";
+            foreach(FcaObject e in this.getObjects())
+            {
+                s += e.getName() + " ";
+            }
+            return s;
+        }
+
+        private int compareObjects(FcaObject x, FcaObject y)
+        {
+            if (x.getId() > y.getId())
+            {
+                return 1;
+            }
+            else if (x.getId() < y.getId())
+            {
+                return -1;
+            }
+            else
+                return 0;
+        }   
     }
 }
