@@ -174,6 +174,11 @@ namespace fca_app.src
             }
             else
                 return 0;
-        }   
+        }
+
+        public int count()
+        {
+            return this.objects.Count;
+        }
     }
 }

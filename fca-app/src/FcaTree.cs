@@ -55,39 +55,81 @@ namespace fca_app.src
             } while ((tree.getParent() != null) && (nextObject != null));
         }
 
-        private FcaTree getParent()
+
+
+        public List<FcaTree> minimal()
+        {
+            List<FcaTree> minimalSets = new List<FcaTree>();
+            int min = this.descendants[0].getMainSet().count();
+            minimalSets.Add(this.descendants[0]);
+            int len = this.descendants.Count;
+            for (int i = 1; i < len; i++)
+            {
+                if (this.descendants[i].getMainSet().count() < min)
+                {
+                    min = this.descendants[i].getMainSet().count();
+                    minimalSets.Clear();
+                    minimalSets.Add(this.descendants[i]);
+                }
+                else if (this.descendants[i].getMainSet().count() == min)
+                {
+                    minimalSets.Add(this.descendants[i]);
+                }
+            }
+            return minimalSets;
+        }
+
+        public FcaTree getParent()
         {
             return this.parent;
         }
 
-        private void addDescendant(FcaTree node)
+        public void addDescendant(FcaTree node)
         {
             this.descendants.Add(node);
         }
 
-        private void setParent(FcaTree tree)
+        public void setParent(FcaTree tree)
         {
             this.parent = tree;
         }
 
-        private void setNextId(int p)
+        public void setNextId(int p)
         {
             this.nextId = p;
         }
 
-        private void setMainSet(FcaObjectSet q)
+        public void setMainSet(FcaObjectSet q)
         {
             this.mainSet = q;
         }
 
-        private FcaObjectSet getMainSet()
+        public FcaObjectSet getMainSet()
         {
             return this.mainSet;
         }
 
-        private int getNextId()
+        public int getNextId()
         {
             return this.nextId;
+        }
+
+        public List<FcaTree> getDescendants()
+        {
+            return this.descendants;
+        }
+
+        public List<FcaTree> subtraction(List<FcaTree> set)
+        {
+            List<FcaTree> resultSet = new List<FcaTree>();
+            foreach (FcaTree node in this.getDescendants())
+            {
+                if (!set.Contains(node))
+                {
+                    resultSet.Add(node);
+                }
+            }
+            return resultSet;
         }
     }
 }
