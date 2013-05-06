@@ -119,5 +119,15 @@ namespace fca_app.src
         public void addAttribute(FcaAttribute attr) {
             this.attributes.Add(attr);
         }
+
+        public FcaObjectSet UltimateSet()
+        {
+            FcaObjectSet set = new FcaObjectSet();
+            foreach (FcaObject obj in objects)
+            {
+                set.addObject(obj);
+            }
+            return set;
+        }
     }
 }

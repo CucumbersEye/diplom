@@ -53,6 +53,8 @@ namespace fca_app
             set.closure(obj.getElemById(2), obj);
             FcaTree tree = new FcaTree();
             tree.closureOneByOne(obj,tree);
+            FcaObjectSet lattice = new FcaObjectSet();
+            lattice.buildLattice(tree, obj);
         }
     }
 }

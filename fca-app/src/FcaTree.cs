@@ -5,18 +5,27 @@ using System.Text;
 
 namespace fca_app.src
 {
+    class Layers
+    {
+        List<FcaObjectSet> level;
+    }
+
     class FcaTree
     {
         private List<FcaTree> descendants;
         private FcaTree parent;
         private FcaObjectSet mainSet;
         private int nextId;
+        private int level;
+        private List<FcaObjectSet> listOfSets;
 
         public FcaTree(){
             descendants = new List<FcaTree>();
             parent = null;
             mainSet = new FcaObjectSet();
             nextId = -1;
+            level = 0;
+            listOfSets = new List<FcaObjectSet>();
         }
 
         public void closureOneByOne(FcaMatrix matrix, FcaTree tree)
@@ -38,6 +47,7 @@ namespace fca_app.src
                         {
                             node = new FcaTree();
                             node.setMainSet(q);
+                            listOfSets.Add(q);
                             node.setNextId(q.maxObject().getId());
                             node.setParent(tree);
                             tree.addDescendant(node);
@@ -77,6 +87,49 @@ namespace fca_app.src
                 }
             }
             return minimalSets;
+        }
+
+
+        private FcaTree find(FcaObjectSet set, FcaTree tree, bool flag)
+        {
+            while ((tree.parent != null) && (!flag))
+            {
+                foreach (FcaTree node in tree.descendants)
+                {
+                    FcaObjectSet s = node.getMainSet();
+                    int l = set.count();
+                    int i;
+                    bool t = true;
+                    for (i = 0; (i < l) && (t); i++)
+                    {
+                        if (!node.getMainSet().getObjects().Contains(set.getObjects()[i]))
+                            t = false;
+                    }
+                    if ((i == l) && (t))
+                    {
+                        flag = true;
+                        tree = node;
+                    }
+                    //else
+                    //{
+                    //    tree = node;
+                    //    break;
+                    //}
+                }
+            }
+                
+            return tree;
+        }
+
+        public List<FcaObjectSet> returnListOfSets(FcaTree tree)
+        {
+            return this.listOfSets;
+        }
+
+        public FcaObjectSet find(FcaObjectSet set)
+        {
+            FcaTree node = find(set, this, false);
+            return node.getMainSet();
         }
 
         public FcaTree getParent()
@@ -131,5 +184,6 @@ namespace fca_app.src
             }
             return resultSet;
         }
+
     }
 }

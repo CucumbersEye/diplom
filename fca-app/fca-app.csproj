@@ -56,6 +56,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\FcaLattice.cs" />
+    <Compile Include="src\FcaLayers.cs" />
     <Compile Include="src\FcaObject.cs" />
     <Compile Include="src\FcaMatrix.cs" />
     <Compile Include="src\FcaObjectSet.cs" />

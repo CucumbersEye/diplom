@@ -9,11 +9,27 @@ namespace fca_app.src
     {
         private List<FcaObject> objects;
         private int[] attributes;
+        bool visited;
+        List<FcaObjectSet> ASupr;
+        List<FcaObjectSet> AInf;
+        List<FcaObjectSet> Visited;
+        List<FcaObjectSet> AllSets; // все когда-либо полученные понятия
+        FcaObjectSet head;
 
-        public FcaObjectSet() {
+        public FcaObjectSet() 
+        {
             objects = new List<FcaObject>();
+            AllSets = new List<FcaObjectSet>();
+            AInf = new List<FcaObjectSet>();
+            ASupr = new List<FcaObjectSet>();
+            Visited  =  new List<FcaObjectSet>();
         }
 
+        /// <summary>
+        ///  Пересечение множеств
+        /// </summary>
+        /// <param name="attr"> атрибуты множества </param>
+        /// <returns></returns>
         public int[] intersect(int[] attr) {
             int len = this.attributes.Length;
             int[] vect = new int[len];
@@ -78,22 +94,39 @@ namespace fca_app.src
         ///  Клонирует множество.
         /// </summary>
         /// <returns>Клон исходного множества.</returns>
-        public FcaObjectSet clone() {
+        public FcaObjectSet clone() 
+        {
             FcaObjectSet newSet = new FcaObjectSet();
             foreach(FcaObject elem in this.objects)
                     newSet.addObject(elem);
             return newSet;
         }
 
-        public FcaObject minObject() {
+        /// <summary>
+        ///     Поиск минимального объекта
+        /// </summary>
+        /// <returns>Минимальный объект</returns>
+        public FcaObject minObject() 
+        {
             return this.objects[0];
         }
 
-        public FcaObject maxObject() {
+
+        /// <summary>
+        /// Поиск максимального объекта
+        /// </summary>
+        /// <returns>Максимальный объект</returns>
+        public FcaObject maxObject() 
+        {
             int len = this.objects.Count;
             return this.objects[len - 1] ;
         }
 
+        /// <summary>
+        ///     Сравнение векторов-атрибутов
+        /// </summary>
+        /// <param name="vect">Сравниваемый атрибут</param>
+        /// <returns>true - равно; false - неравно</returns>
         private bool attrEquals(int[] vect)
         {
             int i = 0;
@@ -110,6 +143,11 @@ namespace fca_app.src
             return this.objects;
         }
 
+        /// <summary>
+        ///     Поиск элемента по имени
+        /// </summary>
+        /// <param name="elem">Имя элемента</param>
+        /// <returns>его порядковый номер</returns>
         public int findElem(FcaObject elem)
         {
             int i = 0;
@@ -121,6 +159,11 @@ namespace fca_app.src
             return i;
         }
 
+        /// <summary>
+        /// Поиск элемента по id
+        /// </summary>
+        /// <param name="elemId">id элемента</param>
+        /// <returns>Порядковый номер элемента</returns>
         public int findElemById(int elemId)
         {
             int i = 0;
@@ -176,9 +219,187 @@ namespace fca_app.src
                 return 0;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <returns>Количество объектов в множестве</returns>
         public int count()
         {
             return this.objects.Count;
+        }
+
+        /// <summary>
+        ///     Список соседей в решетке
+        /// </summary>
+        /// <param name="A"> узел решетки</param>
+        /// <param name="G"> универсальное множество, в котором содержается все понятия</param>
+        /// <returns></returns>
+        private List<FcaObjectSet> minimal(FcaObjectSet A, FcaObjectSet G, FcaMatrix matrix)
+        {
+            List<FcaObjectSet> resultSet = new List<FcaObjectSet>();
+            FcaObjectSet subtr = G.difference(A);   // находим разниу между множествами
+
+            List<FcaObject> iterableSet = subtr.getObjects();
+            foreach (FcaObject obj in iterableSet)
+            {
+                FcaObjectSet B = new FcaObjectSet();
+                B = A.clone();
+                B.closure(obj, matrix);
+                resultSet.Add(B);
+            }
+
+            // найдем минимальные из порожденных множеств
+            List<FcaObjectSet> minSet = new List<FcaObjectSet>();
+            if (resultSet.Count != 0)
+            {
+                int minCount = resultSet[0].count();
+
+                foreach (FcaObjectSet obj in resultSet)
+                {
+                    if (obj.count() < minCount)
+                    {
+                        minSet.Clear();
+                        minCount = obj.count();
+                        minSet.Add(obj);
+                    }
+                    else if (obj.count() == minCount)
+                    {
+                        minSet.Add(obj);
+                    }
+                }
+
+                //foreach (FcaObjectSet obj in minSet)
+                //{
+                //    if ((AllSets == null) || (!AllSets.Contains(obj)))
+                //        AllSets.Add(obj);
+                //}
+            }
+            return minSet;
+        }
+
+
+        public FcaObjectSet first(List<FcaObjectSet> fSet, List<FcaObjectSet> sSet)
+        {
+            List<FcaObjectSet> resultSet = new List<FcaObjectSet>();
+
+            foreach (FcaObjectSet set in fSet)
+            {
+                if (!sSet.Contains(set))
+                {
+                    resultSet.Add(set);
+                }
+            }
+
+            if (resultSet.Count == 0)
+                return null;
+            else
+                return resultSet[0];
+        }
+
+        public void buildLattice(FcaTree tree, FcaMatrix matrix)
+        {
+            FcaObjectSet A = new FcaObjectSet();
+            FcaObjectSet G = matrix.UltimateSet();
+            List<FcaObjectSet> sup = minimal(A, G, matrix); // множесво всех возможных соседей в решетке
+            head = A;
+            AllSets = tree.returnListOfSets(tree);
+
+            foreach (FcaObjectSet obj in sup)
+            {
+                A.ASupr.Add(obj);
+                obj.AInf.Add(A);
+                Visited.Add(obj);
+            }
+
+            // убрать лишние вхождения 0123, найти связь между  1 и 123.
+            while (Visited.Count != 0)
+            {
+                List<FcaObjectSet> list = Visited.ToList<FcaObjectSet>();
+                foreach (FcaObjectSet s in list)
+                {
+                    sup = minimal(s, G, matrix); // множесво всех возможных соседей в решетке
+                    Visited.Remove(s);
+                    foreach (FcaObjectSet obj in sup)
+                    {
+                        s.ASupr.Add(obj);
+                        obj.AInf.Add(s);
+                        Visited.Add(obj);
+                    }
+                }
+            }
+
+            //do
+            //{
+            //    //if ((Equals(A.Visited,A.ASupr)) || (A == null))
+            //    //{
+            //    //    FcaTree treeNode = tree.find(A);
+            //    //    if (treeNode.getParent() != null)
+            //    //        A = treeNode.getParent().getMainSet();
+            //    //    else if (AllSets.Count != 0)
+            //    //    {
+            //    //        A = AllSets[0];
+            //    //        AllSets.Remove(A);
+            //    //    }
+            //    //    else
+            //    //        A = null;
+            //    //}
+            //    //else
+            //    //{
+            //    //   FcaObjectSet i = first(A.ASupr, A.Visited);
+            //    //   A.Visited.Add(i);
+            //    //   A = i;
+            //    //   AllSets.Remove(A);
+            //    //   sup = minimal(A, G, matrix);
+            //    //   foreach (FcaObjectSet obj in sup)
+            //    //   {
+            //    //     A.ASupr.Add(obj);
+            //    //     obj.AInf.Add(A);
+            //    //   }
+            //    //}
+
+            //} while ((A != null) && (A.Visited != A.ASupr));
+        }
+
+
+        public bool equals(List<FcaObject> fSet, List<FcaObject> sSet)
+        {
+            bool flag = true;
+            if (fSet.Count == sSet.Count)
+            {
+                int i;
+                int l = sSet.Count;
+                for (i = 0; (i < l) && (flag); i++)
+                {
+                    if(!sSet.Contains(fSet[i]))
+                        flag = false;
+                }
+
+                if (i >= l)
+                {
+                    flag = true;
+                }
+                else
+                {
+                    flag = false;
+                }
+            }
+            else
+            {
+                flag = false;
+            }
+
+            return flag;
+        }
+
+        public void Remove(FcaObjectSet obj)
+        {
+            List<FcaObjectSet> list = AllSets.ToList<FcaObjectSet>();
+            foreach (FcaObjectSet s in list)
+            {
+                if (this.equals(s.getObjects(), obj.getObjects()))
+                {
+                    AllSets.Remove(s);
+                }
+            }
         }
     }
 }
