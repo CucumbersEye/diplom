@@ -15,6 +15,7 @@ namespace fca_app.src
         List<FcaObjectSet> Visited;
         List<FcaObjectSet> AllSets; // все когда-либо полученные понятия
         FcaObjectSet head;
+        FcaObjectSet tail;
 
         public FcaObjectSet() 
         {
@@ -276,6 +277,75 @@ namespace fca_app.src
             return minSet;
         }
 
+        private void addVisited(FcaObjectSet obj)
+        { 
+            if (VisitedContains(obj) == -1)
+                Visited.Add(obj);
+        }
+
+        private void addAllSets(FcaObjectSet obj)
+        {
+            if (!AllSets.Contains(obj))
+                AllSets.Add(obj);
+        }
+
+        private void addAInf(FcaObjectSet obj)
+        {
+            int i = -1;
+            int l = AInf.Count;
+            for (int j = 0; j < l; j++)
+            {
+                if (AInf[j].Equals(obj))
+                {
+                    i = j;
+                    break;
+                }
+            }
+
+            if (i == -1)
+                AInf.Add(obj);
+        }
+
+        private void addASupr(FcaObjectSet obj)
+        {
+            int i = -1;
+            int l = ASupr.Count;
+            for (int j = 0; j < l; j++)
+            {
+                if (ASupr[j].Equals(obj))
+                {
+                    i = j;
+                    break;
+                }
+            }
+
+            if (i == -1)
+                ASupr.Add(obj);
+        }
+
+        private int AllSetsContains(FcaObjectSet obj)
+        {
+            int i;
+            int l = AllSets.Count;
+            for (i = 0; i < l; i++)
+            {
+                if (AllSets[i].Equals(obj))
+                    return i;
+            }
+            return -1;
+        }
+
+        private int VisitedContains(FcaObjectSet obj)
+        {
+            int i;
+            int l = Visited.Count;
+            for (i = 0; i < l; i++)
+            {
+                if (Visited[i].Equals(obj))
+                    return i;
+            }
+            return -1;
+        }
 
         public FcaObjectSet first(List<FcaObjectSet> fSet, List<FcaObjectSet> sSet)
         {
@@ -302,15 +372,24 @@ namespace fca_app.src
             List<FcaObjectSet> sup = minimal(A, G, matrix); // множесво всех возможных соседей в решетке
             head = A;
             AllSets = tree.returnListOfSets(tree);
+            int i = AllSetsContains(G);
+            if (i == -1)
+            {
+                addAllSets(G);
+                i = AllSetsContains(G);
+            }
+            tail = AllSets[i];
 
             foreach (FcaObjectSet obj in sup)
             {
-                A.ASupr.Add(obj);
-                obj.AInf.Add(A);
-                Visited.Add(obj);
+                i = AllSetsContains(obj);
+                FcaObjectSet existObject = AllSets[i];
+                A.addASupr(existObject);
+                existObject.addAInf(A);
+                addVisited(existObject);
             }
 
-            // убрать лишние вхождения 0123, найти связь между  1 и 123.
+            // найти связь между  1 и 123.
             while (Visited.Count != 0)
             {
                 List<FcaObjectSet> list = Visited.ToList<FcaObjectSet>();
@@ -318,49 +397,44 @@ namespace fca_app.src
                 {
                     sup = minimal(s, G, matrix); // множесво всех возможных соседей в решетке
                     Visited.Remove(s);
+
                     foreach (FcaObjectSet obj in sup)
                     {
-                        s.ASupr.Add(obj);
-                        obj.AInf.Add(s);
-                        Visited.Add(obj);
+                        i = AllSetsContains(obj);
+                        if (i == -1)
+                        {
+                            addAllSets(obj);
+                            i = AllSetsContains(obj);
+                        }
+                        FcaObjectSet existObject = AllSets[i];
+                        s.addASupr(existObject);
+                        existObject.addAInf(s);
+                        addVisited(existObject);
                     }
                 }
             }
 
-            //do
-            //{
-            //    //if ((Equals(A.Visited,A.ASupr)) || (A == null))
-            //    //{
-            //    //    FcaTree treeNode = tree.find(A);
-            //    //    if (treeNode.getParent() != null)
-            //    //        A = treeNode.getParent().getMainSet();
-            //    //    else if (AllSets.Count != 0)
-            //    //    {
-            //    //        A = AllSets[0];
-            //    //        AllSets.Remove(A);
-            //    //    }
-            //    //    else
-            //    //        A = null;
-            //    //}
-            //    //else
-            //    //{
-            //    //   FcaObjectSet i = first(A.ASupr, A.Visited);
-            //    //   A.Visited.Add(i);
-            //    //   A = i;
-            //    //   AllSets.Remove(A);
-            //    //   sup = minimal(A, G, matrix);
-            //    //   foreach (FcaObjectSet obj in sup)
-            //    //   {
-            //    //     A.ASupr.Add(obj);
-            //    //     obj.AInf.Add(A);
-            //    //   }
-            //    //}
+            foreach (FcaObjectSet set in AllSets)
+            {
+                FcaObjectSet check = new FcaObjectSet();
+                foreach (FcaObjectSet l in set.AInf)
+                {
+                    foreach (FcaObject o in l.getObjects())
+                    {
+                        check.addObject(o);
+                    }
+                }
 
-            //} while ((A != null) && (A.Visited != A.ASupr));
+                if (!set.Equals(check))
+                {
+                    i = AllSetsContains(set);
+                    set.addAInf(tree.findInList(set).getParent().getMainSet());
+                }
+            }
         }
 
 
-        public bool equals(List<FcaObject> fSet, List<FcaObject> sSet)
+        public bool equalLists(List<FcaObject> fSet, List<FcaObject> sSet)
         {
             bool flag = true;
             if (fSet.Count == sSet.Count)
@@ -395,11 +469,37 @@ namespace fca_app.src
             List<FcaObjectSet> list = AllSets.ToList<FcaObjectSet>();
             foreach (FcaObjectSet s in list)
             {
-                if (this.equals(s.getObjects(), obj.getObjects()))
+                if (this.equalLists(s.getObjects(), obj.getObjects()))
                 {
                     AllSets.Remove(s);
                 }
             }
+        }
+
+
+        public bool Equals(FcaObjectSet set)
+        {
+            List<FcaObject> list1 = set.getObjects();
+            List<FcaObject> listMain = this.getObjects();
+            bool flag = true;
+            int len = listMain.Count;
+            if (len == list1.Count)
+            {
+                int i;
+                for (i = 0; (i < len) && flag; i++)
+                {
+                    if (!listMain.Contains(list1[i]))
+                        flag = false;
+                }
+
+                //if ((i >= len) && flag)
+                //    flag = true;
+            }
+            else
+            {
+                flag = false;
+            }
+            return flag;
         }
     }
 }
