@@ -61,6 +61,7 @@
     <Compile Include="src\FcaMatrix.cs" />
     <Compile Include="src\FcaObjectSet.cs" />
     <Compile Include="src\FcaTree.cs" />
+    <Compile Include="src\FileScanner.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

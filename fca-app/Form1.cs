@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using fca_app.src;
+using System.IO;
 
 namespace fca_app
 {
@@ -19,42 +20,34 @@ namespace fca_app
 
         private void button1_Click(object sender, EventArgs e)
         {
-            FcaMatrix obj = new FcaMatrix();
-            FcaObjectSet set = new FcaObjectSet();
-            string[] text = textBox.Lines;
-            int[][] matrix = new int[text.Length][];
-            int i, j;
-            i = 0;
-            bool t = false;
-            foreach (string line in text) {
-                j = 0;
-                string[] numbers = line.Split();
-                matrix[i] = new int[numbers.Length];
-                FcaObject el = new FcaObject();
-                el.setName(i.ToString());
-                el.setId(i);
-                foreach (string num in numbers) {
-                    matrix[i][j] = int.Parse(num);
-                    if (t == false)
-                    {
-                        FcaAttribute atr = new FcaAttribute();
-                        atr.setName(j.ToString());
-                        atr.setId(j);
-                        obj.addAttribute(atr);
-                    }
-                    j++;
-                }
-                el.setAttributes(matrix[i]);
-                obj.addObject(el);
-                i++;
-                t = true;
-            }
-            obj.setMatrix(matrix);
-            set.closure(obj.getElemById(2), obj);
+
+            FcaMatrix matrix = new FcaMatrix();
+            FileScanner fscan = new FileScanner();
+            String[] processingFiles = Directory.GetFiles(txtSourceDir.Text);
+
+            matrix = fscan.processFiles(processingFiles);
+
             FcaTree tree = new FcaTree();
-            tree.closureOneByOne(obj,tree);
+            tree.closureOneByOne(matrix,tree);
             FcaObjectSet lattice = new FcaObjectSet();
-            lattice.buildLattice(tree, obj);
+            lattice.buildLattice(tree, matrix);
+        }
+
+        private void btnOpenDirDlg(object sender, EventArgs e)
+        {
+            Button txtBx = (Button)sender;
+            if (txtBx.Name.Equals(btnOpenFinishDirDlg.Name))
+            {
+                fldrBrwsDlg.ShowDialog();
+                String path = fldrBrwsDlg.SelectedPath;
+                txtFinishDir.Text = path;
+            }
+            if (txtBx.Name.Equals(btnOpenSourceDirDlg.Name))
+            {
+                fldrBrwsDlg.ShowDialog();
+                String path = fldrBrwsDlg.SelectedPath;
+                txtSourceDir.Text = path;
+            }
         }
     }
 }

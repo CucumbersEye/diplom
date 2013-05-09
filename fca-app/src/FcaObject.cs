@@ -10,8 +10,11 @@ namespace fca_app.src
         private string name;
         private int id;
         private int[] attributes;
+        List<FcaAttribute> attribs;
 
-        public FcaObject() { 
+        public FcaObject() 
+        {
+            attribs = new List<FcaAttribute>();
         }
 
         public void setName(string name) { 
@@ -38,13 +41,31 @@ namespace fca_app.src
             return this.attributes;
         }
 
-        public void addAttr(int attrId) {
-            this.attributes[attrId] = 1;
+        public void addAttr(FcaAttribute attr) {
+            bool contains = false;
+            foreach(FcaAttribute o in attribs)
+            {
+                if (o.getName().Equals(attr.getName()))
+                    contains = true;
+            }
+
+            if(!contains)
+                attribs.Add(attr);
         }
 
-        public void deleteAttr(int attrId)
+        //public void deleteAttr(int attrId)
+        //{
+        //    this.attributes[attrId] = 0;
+        //}
+
+        public void forwmAttrVector(int len)
         {
-            this.attributes[attrId] = 0;
+            attributes = new int[len];
+
+            foreach (FcaAttribute attr in attribs)
+            {
+                attributes[attr.getId()] = 1;
+            }
         }
     }
 }

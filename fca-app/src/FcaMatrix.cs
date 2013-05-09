@@ -112,13 +112,58 @@ namespace fca_app.src
             return this.attributes;
         }
 
-        public void addObject(FcaObject obj) {
-            this.objects.Add(obj);
+        public void addObject(FcaObject obj) 
+        {
+            bool contains = false;
+            foreach (FcaObject o in objects)
+            {
+                if (o.getName().Equals(obj.getName()))
+                    contains = true;
+            }
+
+            if (!contains)
+            {
+                obj.setId(objects.Count);
+                objects.Add(obj);
+            }
         }
 
-        public void addAttribute(FcaAttribute attr) {
-            this.attributes.Add(attr);
+        public void addAttribute(FcaAttribute attr, FcaObject obj) 
+        {
+            bool contains = false;
+            foreach (FcaAttribute at in attributes)
+            {
+                if (at.getName().Equals(attr.getName()))
+                {
+                    getObjByName(obj.getName()).addAttr(at);
+                    contains = true;
+                }
+            }
+
+            if (!contains)
+            {
+                attr.setId(attributes.Count);
+                getObjByName(obj.getName()).addAttr(attr);
+                attributes.Add(attr);
+            }
         }
+
+        private FcaObject getObjByName(String name)
+        {
+            FcaObject obj = new FcaObject();
+            foreach (FcaObject o in objects)
+            {
+                if (o.getName().Equals(name))
+                {
+                    obj = o;
+                    break;
+                }
+            }
+
+            return obj;
+        }
+
+
 
         public FcaObjectSet UltimateSet()
         {
