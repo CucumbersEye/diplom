@@ -22,16 +22,19 @@ namespace fca_app.src
             this.matrix = matrix;
         }
 
-        public void sortMatrix() {
+        public void sortMatrix() 
+        {
 		    int n = attributes.Count;
 		    int m = objects.Count;
 		    int[,] tempArray = new int[m,2];
 		    int[] line;
 		    int count;
 
-		    for (int i = 0; i < m; i++) {
+		    for (int i = 0; i < m; i++) 
+            {
 			    count = 0;
-			    for (int j = 0; j < n; j++) {
+			    for (int j = 0; j < n; j++) 
+                {
 				    if (this.matrix[i][j] == 1)
 					    count++;
 			    }
@@ -40,17 +43,19 @@ namespace fca_app.src
 		    }
 		
 		    qSort(tempArray,0,m-1);
-		
-		    for(int i=0; i < m; i++){
+
+            int[][] nMatr = new int[objects.Count][];
+
+		    for(int i=0; i < m; i++)
+            {
 			    count = tempArray[i,0];
-                if (i < m / 2 + 1){
-                    line = this.matrix[count];
-                    this.matrix[count] = this.matrix[i];
-                    this.matrix[i] = line;
-                }
+                nMatr[i] = new int[attributes.Count];
+                nMatr[i] = matrix[count];
 			    getElemById(i).setId(count);
 			    getElemById(count).setId(i);
 		    }
+
+            matrix = nMatr;
 	    }
 
         public FcaObject getElemById(int elemId)
@@ -62,6 +67,17 @@ namespace fca_app.src
             if (i >= len)
                 return null;
             return this.objects[i];
+        }
+
+        public FcaAttribute getAttrById(int attrId)
+        {
+            int i = 0;
+            int len = this.attributes.Count();
+            while ((i < len) && (this.attributes[i].getId() != attrId))
+                i++;
+            if (i >= len)
+                return null;
+            return this.attributes[i];
         }
 
         public static void qSort(int[,] A, int low, int high)

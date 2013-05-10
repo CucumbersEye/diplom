@@ -7,15 +7,16 @@ namespace fca_app.src
 {
     class FcaObjectSet
     {
-        private List<FcaObject> objects;
-        private int[] attributes;
-        bool visited;
-        List<FcaObjectSet> ASupr;
-        List<FcaObjectSet> AInf;
-        List<FcaObjectSet> Visited;
-        List<FcaObjectSet> AllSets; // все когда-либо полученные понятия
-        FcaObjectSet head;
-        FcaObjectSet tail;
+        private  List<FcaObject> objects;
+        private  int[] attributes;
+        public   List<FcaObjectSet> ASupr;
+        public   List<FcaObjectSet> AInf;
+        private  List<FcaObjectSet> Visited;
+        public  List<FcaObjectSet> AllSets; // все когда-либо полученные понятия
+        public  FcaObjectSet head;
+        private  FcaObjectSet tail;
+        public   String Name;
+        public bool visited;
 
         public FcaObjectSet() 
         {
@@ -500,6 +501,11 @@ namespace fca_app.src
                 flag = false;
             }
             return flag;
+        }
+
+        public FcaObjectSet getTail()
+        {
+            return this.tail;
         }
     }
 }

@@ -31,6 +31,7 @@ namespace fca_app
             tree.closureOneByOne(matrix,tree);
             FcaObjectSet lattice = new FcaObjectSet();
             lattice.buildLattice(tree, matrix);
+            fscan.RefactorHierarchy(lattice);
         }
 
         private void btnOpenDirDlg(object sender, EventArgs e)

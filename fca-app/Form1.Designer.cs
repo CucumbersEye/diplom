@@ -60,7 +60,7 @@
             // 
             // fldrBrwsDlg
             // 
-            this.fldrBrwsDlg.SelectedPath = "D:\\fca-app";
+            this.fldrBrwsDlg.SelectedPath = "D:\\test";
             // 
             // txtFinishDir
             // 
